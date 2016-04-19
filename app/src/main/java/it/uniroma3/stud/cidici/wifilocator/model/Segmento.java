@@ -10,8 +10,8 @@ public class Segmento {
     }
 
     public Posizione getPuntoMedio() {
-        double xMedio = posizione0.getX() + posizione1.getX() / 2;
-        double yMedio = posizione0.getY() + posizione1.getY() / 2;
+        double xMedio = (posizione0.getX() + posizione1.getX()) / 2;
+        double yMedio = (posizione0.getY() + posizione1.getY()) / 2;
         return new Posizione(xMedio, yMedio);
     }
 }

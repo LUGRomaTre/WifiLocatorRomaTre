@@ -1,37 +1,64 @@
 package it.uniroma3.stud.cidici.wifilocator.ui;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 import it.uniroma3.stud.cidici.wifilocator.R;
-import it.uniroma3.stud.cidici.wifilocator.model.LocalizzatoreTriangolo;
-import it.uniroma3.stud.cidici.wifilocator.model.Mappa;
-import it.uniroma3.stud.cidici.wifilocator.model.Posizione;
-import it.uniroma3.stud.cidici.wifilocator.model.PosizioneListener;
+import it.uniroma3.stud.cidici.wifilocator.model.*;
+
+import java.util.Collections;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements PosizioneListener {
 
+    private static final int SOGLIA = -90;
     private TextView posizioneText;
+    private WifiManager wifiManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Mappa mappa = new Mappa();
-        LocalizzatoreTriangolo localizzatore = new LocalizzatoreTriangolo(this, mappa, -99999, this);
+        LocalizzatoreTriangolo localizzatore = new LocalizzatoreTriangolo(this, mappa, SOGLIA, this);
+        wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 
         setContentView(R.layout.activity_main);
 
         posizioneText = (TextView) findViewById(R.id.posizione);
+        checkPermissions();
         localizzatore.start();
+    }
+
+    private boolean checkPermissions() {
+        boolean permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        boolean permissionCheck2 = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+
+        return permissionCheck && permissionCheck2;
     }
 
     @Override
     public void onPositionUpdate(Posizione posizione) {
-        posizioneText.setText(posizione.toString());
+        stampaPosizione(posizione.toString());
     }
 
     @Override
     public void onPositionError(String message) {
-        posizioneText.setText(message);
+        stampaPosizione(message);
+    }
+
+    private void stampaPosizione(String messaggio) {
+        List<ScanResult> scanResults = wifiManager.getScanResults();
+        Collections.sort(scanResults, new ComparaScanResultsPerDbm());
+        for (ScanResult scanResult : scanResults) {
+            if (scanResult.SSID.equals("Rm3Wi-Fi") && scanResult.level > SOGLIA)
+                messaggio += "\n" + scanResult.BSSID + " " + scanResult.level;
+        }
+        posizioneText.setText(messaggio);
     }
 }
