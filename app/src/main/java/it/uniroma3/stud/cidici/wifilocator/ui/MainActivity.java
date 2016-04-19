@@ -6,11 +6,14 @@ import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 import it.uniroma3.stud.cidici.wifilocator.R;
-import it.uniroma3.stud.cidici.wifilocator.model.*;
+import it.uniroma3.stud.cidici.wifilocator.model.Mappa;
+import it.uniroma3.stud.cidici.wifilocator.model.Posizione;
+import it.uniroma3.stud.cidici.wifilocator.model.localizators.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements PosizioneListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Mappa mappa = new Mappa();
-        LocalizzatoreTriangolo localizzatore = new LocalizzatoreTriangolo(this, mappa, SOGLIA, this);
+        Localizzatore localizzatore = new LocalizzatoreWifi(this, mappa, SOGLIA, this, new CalcolatorePosizioneWifiTriangolo());
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 
         setContentView(R.layout.activity_main);
@@ -35,11 +38,14 @@ public class MainActivity extends AppCompatActivity implements PosizioneListener
         localizzatore.start();
     }
 
-    private boolean checkPermissions() {
+    private void checkPermissions() {
         boolean permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
         boolean permissionCheck2 = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
 
-        return permissionCheck && permissionCheck2;
+        boolean b = permissionCheck && permissionCheck2;
+        if (!b) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
     }
 
     @Override

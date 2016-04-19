@@ -1,9 +1,5 @@
 package it.uniroma3.stud.cidici.wifilocator.model;
 
-/**
- * Tutti i diritti riservati a Christian Micocci
- * Created by christian on 18/04/16.
- */
 public class Posizione {
 
     private double x;
