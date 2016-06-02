@@ -1,0 +1,43 @@
+<html>
+<head>
+    <script>
+        function onPositionUpdate(x, y) {
+            var m = getMultiplier();
+            // The map is rotated by 90deg
+            var locator = document.getElementById("locator");
+            locator.style.top = x * m + 'px';
+            locator.style.left = y * m + 'px';
+        }
+        function onPositionError(message) {
+//            document.getElementById("position").innerHTML = message;
+        }
+        function getMultiplier() {
+            var w = window.innerWidth;
+            var h = window.innerHeight;
+            return Math.min(w / 21, h / 29.7) * 2;
+        }
+        function setBodyMargin() {
+            var m = getMultiplier();
+            var body = document.getElementsByTagName("body")[0];
+            body.style.marginTop = 0.4 * m;
+            body.style.marginLeft = 0.1 * m;
+        }
+        function drawAp(x, y) {
+            var m = getMultiplier();
+            var ap = document.createElement("div");
+            ap.classList.add('ap');
+            ap.style.top = x * m + 'px';
+            ap.style.left = y * m + 'px';
+            document.getElementById("aps").appendChild(ap);
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="aps"></div>
+<div id="locator" class="locator"></div>
+<script>
+    setBodyMargin();
+</script>
+</body>
+</html>

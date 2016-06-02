@@ -1,0 +1,26 @@
+html {
+    background: url('map.png') no-repeat;
+    background-size: contain;
+}
+
+body {
+    margin: 0;
+    position: relative;
+}
+
+.ap, .locator {
+    width: 10px;
+    height: 10px;
+    margin-left: -5px;
+    margin-top: -5px;
+    border-radius: 50%;
+    position: absolute;
+}
+
+.locator {
+    background: blue;
+}
+
+.ap {
+    background: orange;
+}
