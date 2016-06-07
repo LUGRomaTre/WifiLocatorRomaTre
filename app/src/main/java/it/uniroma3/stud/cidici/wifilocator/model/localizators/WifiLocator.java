@@ -7,26 +7,38 @@ import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import it.uniroma3.stud.cidici.wifilocator.model.Ap;
-import it.uniroma3.stud.cidici.wifilocator.model.Mappa;
-import it.uniroma3.stud.cidici.wifilocator.model.Posizione;
+import it.uniroma3.stud.cidici.wifilocator.model.Position;
+import it.uniroma3.stud.cidici.wifilocator.model.UniversityMap;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class LocalizzatoreWifi extends Localizzatore {
+/**
+ * A Locator implementation that uses Wifi APs to locate the user.
+ */
+public class WifiLocator extends Locator {
 
     private final Context context;
-    private final int soglia;
-    private final CalcolatorePosizioneWifi calcolatorePosizioneWifi;
+    private final int dbmThreshold;
+    private final WifiPositionCalculator wifiPositionCalculator;
     private WifiManager wifiManager;
 
-    public LocalizzatoreWifi(Context context, Mappa mappa, int soglia, PosizioneListener listener, CalcolatorePosizioneWifi calcolatorePosizioneWifi) {
-        super(listener, mappa);
+    /**
+     * A Locator implementation that uses Wifi APs to locate the user.
+     *
+     * @param context                Android Context Object
+     * @param universityMap          an UniversityMap instance
+     * @param dbmThreshold           APs with level below this value will not be considered. Example value: -87;
+     * @param listener               an object who gets the Position updates
+     * @param wifiPositionCalculator an object that calculate the position from a list of AP
+     */
+    public WifiLocator(Context context, UniversityMap universityMap, int dbmThreshold, PositionListener listener, WifiPositionCalculator wifiPositionCalculator) {
+        super(listener, universityMap);
         this.context = context;
-        this.soglia = soglia;
-        this.calcolatorePosizioneWifi = calcolatorePosizioneWifi;
+        this.dbmThreshold = dbmThreshold;
+        this.wifiPositionCalculator = wifiPositionCalculator;
     }
 
     @Override
@@ -38,33 +50,33 @@ public class LocalizzatoreWifi extends Localizzatore {
         wifiManager.startScan();
     }
 
-    private Posizione calcolaPosizione(List<ScanResult> scanResults) throws PosizioneNonTrovataException {
+    private Position calculatePosition(List<ScanResult> scanResults) throws PositionNotFoundException {
         filtraListaSoloRomaTre(scanResults);
         scanResults = filtraListaScanResultPerDbmMaggioriDiSoglia(scanResults);
 
-        if (scanResults.size() < 2) throw new PosizioneNonTrovataException("Non riesco a localizzarti");
+        if (scanResults.size() < 2) throw new PositionNotFoundException("Non riesco a localizzarti");
 
         List<Ap> apList = new ArrayList<>(scanResults.size());
         for (ScanResult scanResult : scanResults) {
-            apList.add(getMappa().getAp(scanResult.BSSID));
+            apList.add(getUniversityMap().getAp(scanResult.BSSID));
         }
 
-        return calcolatorePosizioneWifi.calcolaPosizione(apList);
+        return wifiPositionCalculator.calculatePosition(apList);
     }
 
     private void filtraListaSoloRomaTre(List<ScanResult> scanResults) {
         for (Iterator<ScanResult> iterator = scanResults.iterator(); iterator.hasNext(); ) {
             ScanResult scanResult = iterator.next();
-            if (!getMappa().isRomaTreAp(scanResult)) iterator.remove();
+            if (!getUniversityMap().isRomaTreAp(scanResult)) iterator.remove();
         }
     }
 
     private List<ScanResult> filtraListaScanResultPerDbmMaggioriDiSoglia(List<ScanResult> inputScanResults) {
         List<ScanResult> outputScanResults = new ArrayList<>(3);
-        Collections.sort(inputScanResults, new ComparaScanResultsPerDbm());
+        Collections.sort(inputScanResults, new CompareScanResultsByDbmLevel());
         for (ScanResult scanResult : inputScanResults) {
             if (outputScanResults.size() >= 3) break;
-            if (scanResult.level > soglia) outputScanResults.add(scanResult);
+            if (scanResult.level > dbmThreshold) outputScanResults.add(scanResult);
         }
         return outputScanResults;
     }
@@ -73,9 +85,9 @@ public class LocalizzatoreWifi extends Localizzatore {
         @Override
         public void onReceive(Context context, Intent intent) {
             try {
-                aggiornaPosizione(calcolaPosizione(wifiManager.getScanResults()));
-            } catch (PosizioneNonTrovataException e) {
-                errorePosizione(e.getMessage());
+                updatePosition(calculatePosition(wifiManager.getScanResults()));
+            } catch (PositionNotFoundException e) {
+                positionError(e.getMessage());
             }
             wifiManager.startScan();
         }

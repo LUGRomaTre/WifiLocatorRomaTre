@@ -6,34 +6,43 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import it.uniroma3.stud.cidici.wifilocator.model.Mappa;
-import it.uniroma3.stud.cidici.wifilocator.model.localizators.CalcolatorePosizioneWifiTriangolo;
-import it.uniroma3.stud.cidici.wifilocator.model.localizators.Localizzatore;
-import it.uniroma3.stud.cidici.wifilocator.model.localizators.LocalizzatoreWifi;
-import it.uniroma3.stud.cidici.wifilocator.model.localizators.PosizioneListener;
+import it.uniroma3.stud.cidici.wifilocator.model.UniversityMap;
+import it.uniroma3.stud.cidici.wifilocator.model.localizators.Locator;
+import it.uniroma3.stud.cidici.wifilocator.model.localizators.PositionListener;
+import it.uniroma3.stud.cidici.wifilocator.model.localizators.WifiLocator;
+import it.uniroma3.stud.cidici.wifilocator.model.localizators.WifiPositionCalculatorTriangle;
 
-public abstract class AbstractMapActivity extends AppCompatActivity implements PosizioneListener {
+/**
+ * You can extend this Activity to simple create a UI for show user location
+ */
+public abstract class AbstractMapActivity extends AppCompatActivity implements PositionListener {
 
-    protected static final int SOGLIA = -90;
-    private Mappa mappa;
+    protected static final int DBM_THRESHOLD = -95;
+    private UniversityMap universityMap;
 
-    public Mappa getMappa() {
-        return mappa;
+    public UniversityMap getUniversityMap() {
+        return universityMap;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mappa = new Mappa();
-        Localizzatore localizzatore = new LocalizzatoreWifi(this, mappa, SOGLIA, this, new CalcolatorePosizioneWifiTriangolo());
+        universityMap = new UniversityMap();
+        Locator locator = new WifiLocator(this, universityMap, DBM_THRESHOLD, this, new WifiPositionCalculatorTriangle());
 
         loadContentView();
         checkPermissions();
-        localizzatore.start();
+        locator.start();
     }
 
+    /**
+     * This method should initialize the content View
+     */
     protected abstract void loadContentView();
 
+    /**
+     * Android 6.0 permissions check
+     */
     private void checkPermissions() {
         boolean permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
         boolean permissionCheck2 = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;

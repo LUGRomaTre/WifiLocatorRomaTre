@@ -5,25 +5,25 @@ import android.net.wifi.ScanResult;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Mappa {
+public class UniversityMap {
 
     private final Map<String, Ap> bssidApMap;
 
-    public Mappa() {
-        Ap ds1 = new Ap("7c:0e:ce:2a:43:b0", new Posizione(12.1, 7.3));
-        Ap ds2A = new Ap("58:f3:9c:80:88:f0", new Posizione(9.2, 6.8));
-        Ap ds2B = new Ap("58:f3:9c:b5:19:c0", new Posizione(12, 6.8));
-        Ap ds3b = new Ap("7c:0e:ce:15:94:40", new Posizione(6.6, 7.8));
-        Ap n1 = new Ap("7c:0e:ce:4c:09:a0", new Posizione(11.3, 8.8));
-        Ap n3 = new Ap("7c:0e:ce:15:9a:30", new Posizione(6.7, 5.8));
-        Ap n5 = new Ap("7c:0e:ce:15:9a:00", new Posizione(3.5, 5.6));
-        Ap n6 = new Ap("7c:0e:ce:15:94:00", new Posizione(4.5, 7.5));
-        Ap n8 = new Ap("64:d8:14:2a:38:60", new Posizione(2.6, 8));
-        Ap n10 = new Ap("58:f3:9c:80:78:50", new Posizione(0.7, 5));
-        Ap corr10 = new Ap("7c:0e:ce:2a:43:d0", new Posizione(1.2, 7));
-        Ap corrEntr = new Ap("64:d8:14:b3:48:60", new Posizione(1.8, 1.8));
-        Ap b1 = new Ap("58:f3:9c:b5:2f:d0", new Posizione(5.7, 3.8));
-        Ap mensa = new Ap("58:f3:9c:80:a9:a0", new Posizione(0, 14));
+    public UniversityMap() {
+        Ap ds1 = new Ap("7c:0e:ce:2a:43:b0", new Position(12.1, 7.3));
+        Ap ds2A = new Ap("58:f3:9c:80:88:f0", new Position(9.2, 6.8));
+        Ap ds2B = new Ap("58:f3:9c:b5:19:c0", new Position(12, 6.8));
+        Ap ds3b = new Ap("7c:0e:ce:15:94:40", new Position(6.6, 7.8));
+        Ap n1 = new Ap("7c:0e:ce:4c:09:a0", new Position(11.3, 8.8));
+        Ap n3 = new Ap("7c:0e:ce:15:9a:30", new Position(6.7, 5.8));
+        Ap n5 = new Ap("7c:0e:ce:15:9a:00", new Position(3.5, 5.6));
+        Ap n6 = new Ap("7c:0e:ce:15:94:00", new Position(4.5, 7.5));
+        Ap n8 = new Ap("64:d8:14:2a:38:60", new Position(2.6, 8));
+        Ap n10 = new Ap("58:f3:9c:80:78:50", new Position(0.7, 5));
+        Ap corr10 = new Ap("7c:0e:ce:2a:43:d0", new Position(1.2, 7));
+        Ap corrEntr = new Ap("64:d8:14:b3:48:60", new Position(1.8, 1.8));
+        Ap b1 = new Ap("58:f3:9c:b5:2f:d0", new Position(5.7, 3.8));
+        Ap mensa = new Ap("58:f3:9c:80:a9:a0", new Position(0, 14));
         bssidApMap = new HashMap<>(10);
         bssidApMap.put(ds1.getBssid(), ds1);
         bssidApMap.put(ds2A.getBssid(), ds2A);

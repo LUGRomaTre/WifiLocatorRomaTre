@@ -16,7 +16,7 @@
         android:text="Posizione" />
 
     <TextView
-        android:id="@+id/posizione"
+        android:id="@+id/position"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="N/D" />

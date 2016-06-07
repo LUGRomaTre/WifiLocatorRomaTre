@@ -5,13 +5,12 @@ import android.os.Build;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import it.uniroma3.stud.cidici.wifilocator.model.Ap;
-import it.uniroma3.stud.cidici.wifilocator.model.Posizione;
+import it.uniroma3.stud.cidici.wifilocator.model.Position;
 
 import java.util.Map;
 
 /**
- * Tutti i diritti riservati a Christian Micocci
- * Created by christian on 13/05/16.
+ * A simple implementation in HTML5 to show the UniversityMap
  */
 public class WebViewMapActivity extends AbstractMapActivity {
 
@@ -37,8 +36,8 @@ public class WebViewMapActivity extends AbstractMapActivity {
     }
 
     @Override
-    public void onPositionUpdate(Posizione posizione) {
-        webview.loadUrl("javascript:onPositionUpdate(" + posizione.getX() + ", " + posizione.getY() + ");");
+    public void onPositionUpdate(Position position) {
+        webview.loadUrl("javascript:onPositionUpdate(" + position.getX() + ", " + position.getY() + ");");
     }
 
     @Override
@@ -48,11 +47,11 @@ public class WebViewMapActivity extends AbstractMapActivity {
     }
 
     private void drawAps() {
-        Map<String, Ap> bssidApMap = getMappa().getBssidApMap();
+        Map<String, Ap> bssidApMap = getUniversityMap().getBssidApMap();
         for (Map.Entry<String, Ap> apEntry : bssidApMap.entrySet()) {
             Ap ap = apEntry.getValue();
-            Posizione posizione = ap.getPosizione();
-            webview.loadUrl("javascript:drawAp(" + posizione.getX() + ", " + posizione.getY() + ");");
+            Position position = ap.getPosition();
+            webview.loadUrl("javascript:drawAp(" + position.getX() + ", " + position.getY() + ");");
         }
     }
 }

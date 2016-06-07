@@ -5,8 +5,8 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.widget.TextView;
 import it.uniroma3.stud.cidici.wifilocator.R;
-import it.uniroma3.stud.cidici.wifilocator.model.Posizione;
-import it.uniroma3.stud.cidici.wifilocator.model.localizators.ComparaScanResultsPerDbm;
+import it.uniroma3.stud.cidici.wifilocator.model.Position;
+import it.uniroma3.stud.cidici.wifilocator.model.localizators.CompareScanResultsByDbmLevel;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,34 +17,34 @@ import java.util.List;
  */
 public class TextMapActivity extends AbstractMapActivity {
 
-    private TextView posizioneText;
+    private TextView positionText;
     private WifiManager wifiManager;
 
     @Override
     protected void loadContentView() {
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         setContentView(R.layout.activity_map_text);
-        posizioneText = (TextView) findViewById(R.id.posizione);
+        positionText = (TextView) findViewById(R.id.position);
     }
 
     @Override
-    public void onPositionUpdate(Posizione posizione) {
-        stampaPosizione(posizione.toString());
+    public void onPositionUpdate(Position position) {
+        printPosition(position.toString());
     }
 
     @Override
     public void onPositionError(String message) {
-        stampaPosizione(message);
+        printPosition(message);
     }
 
-    private void stampaPosizione(String messaggio) {
+    private void printPosition(String message) {
         List<ScanResult> scanResults = wifiManager.getScanResults();
-        Collections.sort(scanResults, new ComparaScanResultsPerDbm());
+        Collections.sort(scanResults, new CompareScanResultsByDbmLevel());
         for (ScanResult scanResult : scanResults) {
-            if (scanResult.SSID.equals("Rm3Wi-Fi") && scanResult.level > SOGLIA)
-                messaggio += "\n" + scanResult.BSSID + " " + scanResult.level;
+            if (scanResult.SSID.equals("Rm3Wi-Fi") && scanResult.level > DBM_THRESHOLD)
+                message += "\n" + scanResult.BSSID + " " + scanResult.level;
         }
-        posizioneText.setText(messaggio);
+        positionText.setText(message);
     }
 
 }

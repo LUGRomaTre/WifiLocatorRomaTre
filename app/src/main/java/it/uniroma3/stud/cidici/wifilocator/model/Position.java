@@ -1,11 +1,11 @@
 package it.uniroma3.stud.cidici.wifilocator.model;
 
-public class Posizione {
+public class Position {
 
     private double x;
     private double y;
 
-    public Posizione(double x, double y) {
+    public Position(double x, double y) {
         this.x = x;
         this.y = y;
     }
