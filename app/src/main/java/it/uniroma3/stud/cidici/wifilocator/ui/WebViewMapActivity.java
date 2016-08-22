@@ -47,7 +47,7 @@ public class WebViewMapActivity extends AbstractMapActivity {
     }
 
     private void drawAps() {
-        Map<String, Ap> bssidApMap = getUniversityMap().getBssidApMap();
+        Map<String, Ap> bssidApMap = getPlanimetry().getBssidApMap();
         for (Map.Entry<String, Ap> apEntry : bssidApMap.entrySet()) {
             Ap ap = apEntry.getValue();
             Position position = ap.getPosition();

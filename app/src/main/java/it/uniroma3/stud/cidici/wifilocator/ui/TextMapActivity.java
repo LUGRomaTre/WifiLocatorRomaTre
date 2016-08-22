@@ -41,7 +41,6 @@ public class TextMapActivity extends AbstractMapActivity {
         List<ScanResult> scanResults = wifiManager.getScanResults();
         Collections.sort(scanResults, new CompareScanResultsByDbmLevel());
         for (ScanResult scanResult : scanResults) {
-            if (scanResult.SSID.equals("Rm3Wi-Fi") && scanResult.level > DBM_THRESHOLD)
                 message += "\n" + scanResult.BSSID + " " + scanResult.level;
         }
         positionText.setText(message);

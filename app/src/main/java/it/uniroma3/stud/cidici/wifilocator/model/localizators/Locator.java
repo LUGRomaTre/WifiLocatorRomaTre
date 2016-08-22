@@ -1,18 +1,18 @@
 package it.uniroma3.stud.cidici.wifilocator.model.localizators;
 
+import it.uniroma3.stud.cidici.wifilocator.model.Planimetry;
 import it.uniroma3.stud.cidici.wifilocator.model.Position;
-import it.uniroma3.stud.cidici.wifilocator.model.UniversityMap;
 
 /**
  * A component that with different methods and technologies finds the user position.
  */
 public abstract class Locator {
     private PositionListener positionListener;
-    private UniversityMap universityMap;
+    private Planimetry planimetry;
 
-    public Locator(PositionListener positionListener, UniversityMap universityMap) {
+    public Locator(PositionListener positionListener, Planimetry planimetry) {
         this.positionListener = positionListener;
-        this.universityMap = universityMap;
+        this.planimetry = planimetry;
     }
 
     protected void updatePosition(Position position) {
@@ -31,8 +31,8 @@ public abstract class Locator {
         this.positionListener = positionListener;
     }
 
-    public UniversityMap getUniversityMap() {
-        return universityMap;
+    public Planimetry getPlanimetry() {
+        return planimetry;
     }
 
     /**

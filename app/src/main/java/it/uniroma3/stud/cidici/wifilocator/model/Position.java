@@ -1,33 +1,33 @@
 package it.uniroma3.stud.cidici.wifilocator.model;
 
+import java.util.Date;
+
 public class Position {
 
-    private double x;
-    private double y;
+    private final double x;
+    private final double y;
+    private final long timestamp;
 
     public Position(double x, double y) {
         this.x = x;
         this.y = y;
+        timestamp = (new Date()).getTime();
     }
 
     public double getX() {
         return x;
     }
 
-    public void setX(double x) {
-        this.x = x;
-    }
-
     public double getY() {
         return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
     }
 
     @Override
     public String toString() {
         return x + ", " + y;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
     }
 }

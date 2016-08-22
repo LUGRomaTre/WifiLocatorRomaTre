@@ -1,15 +1,14 @@
 package it.uniroma3.stud.cidici.wifilocator.model;
 
-import android.net.wifi.ScanResult;
-
-import java.util.HashMap;
 import java.util.Map;
 
-public class UniversityMap {
+/**
+ * Tutti i diritti riservati a Christian Micocci
+ * Created by christian on 31/07/16.
+ */
+public class UniversityPlanimetry extends Planimetry {
 
-    private final Map<String, Ap> bssidApMap;
-
-    public UniversityMap() {
+    public UniversityPlanimetry() {
         Ap ds1 = new Ap("7c:0e:ce:2a:43:b0", new Position(12.1, 7.3));
         Ap ds2A = new Ap("58:f3:9c:80:88:f0", new Position(9.2, 6.8));
         Ap ds2B = new Ap("58:f3:9c:b5:19:c0", new Position(12, 6.8));
@@ -24,7 +23,7 @@ public class UniversityMap {
         Ap corrEntr = new Ap("64:d8:14:b3:48:60", new Position(1.8, 1.8));
         Ap b1 = new Ap("58:f3:9c:b5:2f:d0", new Position(5.7, 3.8));
         Ap mensa = new Ap("58:f3:9c:80:a9:a0", new Position(0, 14));
-        bssidApMap = new HashMap<>(10);
+        Map<String, Ap> bssidApMap = getBssidApMap();
         bssidApMap.put(ds1.getBssid(), ds1);
         bssidApMap.put(ds2A.getBssid(), ds2A);
         bssidApMap.put(ds2B.getBssid(), ds2B);
@@ -38,17 +37,5 @@ public class UniversityMap {
         bssidApMap.put(corr10.getBssid(), corr10);
         bssidApMap.put(corrEntr.getBssid(), corrEntr);
         bssidApMap.put(b1.getBssid(), b1);
-    }
-
-    public Ap getAp(String bssid) {
-        return bssidApMap.get(bssid);
-    }
-
-    public boolean isRomaTreAp(ScanResult scanResult) {
-        return bssidApMap.containsKey(scanResult.BSSID);
-    }
-
-    public Map<String, Ap> getBssidApMap() {
-        return bssidApMap;
     }
 }

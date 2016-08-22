@@ -16,23 +16,25 @@ import java.util.*;
  * A Locator implementation that uses Wifi APs to locate the user.
  */
 @SuppressWarnings("Duplicates")
-public class WifiLocator extends Locator {
+public class WifiLocatorOld extends Locator {
 
     private static final int AP_GAIN = 14;
     private final Context context;
+    private final SmartWifiCalculator smartWifiCalculator;
     private WifiManager wifiManager;
     private double gnagna = 5;
 
     /**
      * A Locator implementation that uses Wifi APs to locate the user.
      *
-     * @param context                Android Context Object
-     * @param planimetry             an UniversityMap instance
-     * @param listener               an object who gets the Position updates
+     * @param context    Android Context Object
+     * @param planimetry an UniversityMap instance
+     * @param listener   an object who gets the Position updates
      */
-    public WifiLocator(Context context, Planimetry planimetry, PositionListener listener) {
+    public WifiLocatorOld(Context context, Planimetry planimetry, PositionListener listener) {
         super(listener, planimetry);
         this.context = context;
+        smartWifiCalculator = new SmartWifiCalculator();
     }
 
     @Override
@@ -44,31 +46,9 @@ public class WifiLocator extends Locator {
         wifiManager.startScan();
     }
 
-//    private Position calculatePosition(List<ScanResult> scanResults) throws PositionNotFoundException {
-//        filtraListaSoloRomaTre(scanResults);
-//        scanResults = orderListScanByDbm(scanResults);
-//
-//        if (scanResults.size() < 2) throw new PositionNotFoundException("Non riesco a localizzarti");
-//
-//        List<Ap> apList = new ArrayList<>(scanResults.size());
-//        for (ScanResult scanResult : scanResults) {
-//            apList.add(getPlanimetry().getAp(scanResult.BSSID));
-//        }
-//
-//        return wifiPositionCalculator.calculatePosition(apList);
-//    }
-
     private Position calculatePosition(List<ScanResult> scanResults) throws PositionNotFoundException {
-        double xSum = 0, totWeight = 0, ySum = 0;
         Set<Ap> aps = convertScanResultListToApList(scanResults);
-        for (Ap ap : aps) {
-            double weight = Math.pow(1.0 / (-ap.getLevel()), gnagna);
-            Position position = ap.getPosition();
-            xSum += weight * position.getX();
-            ySum += weight * position.getY();
-            totWeight += weight;
-        }
-        return new Position(xSum / totWeight, ySum / totWeight);
+        return smartWifiCalculator.findPosition(4, aps);
     }
 
     private Set<Ap> convertScanResultListToApList(List<ScanResult> srs) {
@@ -87,7 +67,7 @@ public class WifiLocator extends Locator {
             scanResultList.add(sr);
         }
 
-        // Calculate all distances
+        // Calculate all levels
         for (Ap ap : apsFound.keySet()) {
             List<ScanResult> scanResultList = apsFound.get(ap);
             int levelMax = Integer.MIN_VALUE;
